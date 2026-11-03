@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -38,5 +38,77 @@
   <div id="results"></div>
 
   <script src="app.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Commit Changelog</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- SheetJS Library for Excel Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="background-glow"></div>
+
+  <main class="container">
+    <header class="header">
+      <div class="badge"><i class="fa-solid fa-code-commit"></i> GitHub Changelog Generator</div>
+      <h1>Public Commit Changelog</h1>
+      <p class="subtitle">Search and generate formatted logs for any public GitHub repository.</p>
+    </header>
+
+    <section class="card input-card">
+      <div class="form-grid">
+        <div class="input-group">
+          <label for="username"><i class="fa-solid fa-user"></i> GitHub Username</label>
+          <input type="text" id="username" value="sanjaygdrrad" placeholder="e.g. sanjaygdrrad" />
+        </div>
+
+        <div class="input-group">
+          <label for="repo"><i class="fa-solid fa-folder-open"></i> Repository</label>
+          <input type="text" id="repo" value="public-changelog-tracer" placeholder="e.g. public-changelog-tracer" />
+        </div>
+
+        <div class="input-group">
+          <label for="fromDate"><i class="fa-solid fa-calendar"></i> From Date</label>
+          <input type="date" id="fromDate" />
+        </div>
+
+        <div class="input-group">
+          <label for="toDate"><i class="fa-solid fa-calendar"></i> To Date</label>
+          <input type="date" id="toDate" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="fetchBtn" class="btn btn-primary"><i class="fa-solid fa-bolt"></i> Fetch Commits</button>
+        <button id="exportBtn" class="btn btn-secondary" style="display: none;"><i class="fa-solid fa-file-excel"></i> Export to XLSX</button>
+      </div>
+    </section>
+
+    <section class="card results-card">
+      <div class="results-header">
+        <h2 id="statusMessage">Enter parameters above to query commits</h2>
+      </div>
+      <div id="commitList" class="commit-list"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="visitor-counter">
+      <i class="fa-solid fa-eye"></i> Total Visits: <span id="visitorCount">...</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
