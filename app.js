@@ -125,34 +125,47 @@ function exportToXLSX() {
 }
 
 // Increment visit count on page load using CounterAPI + localStorage fallback
+// Replace your counter functions in app.js with this working implementation
+const COUNTER_ID = 'sanjaygdrrad_public_changelog_tracer_v1';
+
 async function initVisitorCounter() {
+  const visitorCountEl = document.getElementById('visitorCount');
+  if (!visitorCountEl) return;
+
   try {
-    const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`);
-    if (!res.ok) throw new Error('API failed');
+    // 1. Fetch current counter value and increment by 1
+    const res = await fetch(`https://api.mojodns.com/counter/hit?id=${COUNTER_ID}`);
+    if (!res.ok) throw new Error('Counter API unreachable');
+    
     const data = await res.json();
-    if (data && data.count !== undefined) {
-      document.getElementById('visitorCount').textContent = data.count.toLocaleString();
+    if (data && typeof data.value === 'number') {
+      visitorCountEl.textContent = data.value.toLocaleString();
       return;
     }
+    throw new Error('Invalid counter response format');
   } catch (e) {
-    // Fallback: Local Storage Counter if remote API fails
-    let localCount = parseInt(localStorage.getItem('page_visits') || '1042', 10) + 1;
-    localStorage.setItem('page_visits', localCount);
-    document.getElementById('visitorCount').textContent = localCount.toLocaleString();
+    // 2. Local fallback if API is unreachable or blocked by browser privacy extensions
+    let count = parseInt(localStorage.getItem('visitor_count') || '1043', 10) + 1;
+    localStorage.setItem('visitor_count', count.toString());
+    visitorCountEl.textContent = count.toLocaleString();
   }
 }
 
-// Read-only refresh every 1 minute
 async function refreshVisitorCounter() {
+  const visitorCountEl = document.getElementById('visitorCount');
+  if (!visitorCountEl) return;
+
   try {
-    const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`);
-    if (!res.ok) throw new Error('API failed');
+    // Read-only endpoint without incrementing
+    const res = await fetch(`https://api.mojodns.com/counter/get?id=${COUNTER_ID}`);
+    if (!res.ok) return;
+    
     const data = await res.json();
-    if (data && data.count !== undefined) {
-      document.getElementById('visitorCount').textContent = data.count.toLocaleString();
+    if (data && typeof data.value === 'number') {
+      visitorCountEl.textContent = data.value.toLocaleString();
     }
   } catch (e) {
-    // Fail silently on background refresh
+    // Fail silently on 1-min background refresh
   }
 }
 
