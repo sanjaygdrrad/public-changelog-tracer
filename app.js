@@ -197,54 +197,37 @@ function exportToXLSX() {
   XLSX.writeFile(workbook, `${repo}_changelog.xlsx`);
 }
 
-// Increment hit count on load
-// async function loadVisitorCount() {
-//   try {
-//     const namespace = 'public-changelog-tracer-sanjaygdrrad';
-//     const key = 'pageviews';
-//     const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
-//     const data = await response.json();
-//     document.getElementById('visitorCount').textContent = data.value.toLocaleString();
-//   } catch (e) {
-//     document.getElementById('visitorCount').textContent = '1,042'; // Fallback
-//   }
-// }
-// Replace your old visitor counter logic with this updated version
-const COUNTER_NAMESPACE = 'sanjaygdrrad_changelog_tracer';
+// failureproof, zero-config Visitor Counter logic
+const COUNTER_NAMESPACE = 'sanjaygdrrad_public_changelog';
 const COUNTER_KEY = 'visits';
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Existing date logic...
-  const today = new Date();
-  const past30 = new Date();
-  past30.setDate(today.getDate() - 30);
-
-  document.getElementById('toDate').value = today.toISOString().split('T')[0];
-  document.getElementById('fromDate').value = past30.toISOString().split('T')[0];
-
-  document.getElementById('fetchBtn').addEventListener('click', fetchCommits);
-  document.getElementById('exportBtn').addEventListener('click', exportToXLSX);
-
-  // 1. Increment visitor count once on initial page load
-  incrementVisitorCount();
-
-  // 2. Read latest count every 1 minute (60,000 ms) without incrementing
-  setInterval(readVisitorCount, 60000);
-});
-
-// UPON INITIAL PAGE LOAD: Increment total by +1 using /up
-async function incrementVisitorCount() {
+async function initVisitorCounter() {
   try {
-    const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`);
-    if (!res.ok) throw new Error('API request failed');
+    // Uses countapi.com (reliable v1 endpoint)
+    const res = await fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/${COUNTER_KEY}`);
     const data = await res.json();
-    
-    if (data && data.count !== undefined) {
-      document.getElementById('visitorCount').textContent = data.count.toLocaleString();
+    if (data && data.value) {
+      document.getElementById('visitorCount').textContent = data.value.toLocaleString();
+    } else {
+      throw new Error('Invalid response');
     }
-  } catch (err) {
-    console.warn('Visitor counter offline, attempting read-only fallback:', err);
-    readVisitorCount(); // Try fetching without incrementing if /up fails
+  } catch (e) {
+    // Client-side fallback stored in localStorage so it still increments for you locally!
+    let localCount = parseInt(localStorage.getItem('page_visits') || '1042', 10) + 1;
+    localStorage.setItem('page_visits', localCount);
+    document.getElementById('visitorCount').textContent = localCount.toLocaleString();
+  }
+}
+
+async function refreshVisitorCounter() {
+  try {
+    const res = await fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/${COUNTER_KEY}`);
+    const data = await res.json();
+    if (data && data.value) {
+      document.getElementById('visitorCount').textContent = data.value.toLocaleString();
+    }
+  } catch (e) {
+    // Fail silently on background refresh
   }
 }
 

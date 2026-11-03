@@ -33,4 +33,3 @@ Try the app live on GitHub Pages:
 - **HTML5 & CSS3** (Custom Navy Blue CSS variables & Flexbox/Grid)
 - **Vanilla JavaScript (ES6+)** (Async/Await Fetch API)
 - **[SheetJS / xlsx](https://github.com/SheetJS/sheetjs)** (Client-side Excel generation)
-- **
