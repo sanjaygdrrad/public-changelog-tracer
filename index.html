@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Public Commit Changelog</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Public Commit Changelog</h1>
+  <p>Look up commits by any public GitHub user on any public repository.</p>
+
+  <form id="search-form">
+    <label>
+      GitHub username
+      <input type="text" id="username" placeholder="e.g. nirajbhusal" required />
+    </label>
+
+    <label>
+      Repository (owner/repo or just repo name if same owner)
+      <input type="text" id="repo" placeholder="e.g. rasuwa-flood-bulletin" required />
+    </label>
+
+    <label>
+      From date
+      <input type="date" id="since" required />
+    </label>
+
+    <label>
+      To date
+      <input type="date" id="until" required />
+    </label>
+
+    <button type="submit">Fetch commits</button>
+  </form>
+
+  <div id="status"></div>
+  <div id="results"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
